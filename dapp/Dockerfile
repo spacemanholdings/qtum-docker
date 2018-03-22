@@ -1,10 +1,18 @@
 FROM ubuntu as tools
 MAINTAINER pandazwb
 
+ENV HOME /root
+ENV GOPATH /root/go
+ENV PATH /root/go/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+RUN mkdir -p /root/go
+
 RUN apt-get update && \
-  apt-get install -y wget unzip && \
+  apt-get install -y wget unzip git && \
   apt-get install -y curl vim-tiny less && \
   rm -rf /var/lib/apt/lists/*
+
+RUN wget -qO- http://golang.org/dl/go1.10.linux-amd64.tar.gz | tar -C /usr/local -xzf -
 
 RUN wget https://github.com/mattn/goreman/releases/download/v0.0.10/goreman_linux_amd64.zip && \
   unzip -o -d /usr/local/bin goreman_linux_amd64.zip && \
@@ -22,7 +30,7 @@ RUN wget https://github.com/ethereum/solidity/releases/download/v0.4.19/solc-sta
 
 RUN wget -v https://github.com/qtumproject/solar/releases/download/0.0.11/solar-linux-amd64 -O /usr/local/bin/solar && chmod 0755 /usr/local/bin/solar 
 
-RUN wget https://github.com/qtumproject/qtumportal/releases/download/0.0.8/qtumportal-linux -O /usr/local/bin/qtumportal && chmod 0755 /usr/local/bin/qtumportal
+RUN go get -u github.com/kfichter/qtum-portal/cli/qtumportal && mv "$(which qtumportal)" /usr/local/bin/qtumportal && chmod 0755 /usr/local/bin/qtumportal
 
 # Use multi-stage build makes the image smaller by about 80 MB
 FROM jeanblanchard/alpine-glibc
