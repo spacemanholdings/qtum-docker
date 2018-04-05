@@ -30,7 +30,7 @@ RUN wget https://github.com/ethereum/solidity/releases/download/v0.4.19/solc-sta
 
 RUN wget -v https://github.com/qtumproject/solar/releases/download/0.0.11/solar-linux-amd64 -O /usr/local/bin/solar && chmod 0755 /usr/local/bin/solar 
 
-RUN go get -u github.com/kfichter/qtum-portal/cli/qtumportal && mv "$(which qtumportal)" /usr/local/bin/qtumportal && chmod 0755 /usr/local/bin/qtumportal
+RUN go get -u github.com/spacemanholdings/qtum-portal/cli/qtumportal && mv "$(which qtumportal)" /usr/local/bin/qtumportal && chmod 0755 /usr/local/bin/qtumportal
 
 # Use multi-stage build makes the image smaller by about 80 MB
 FROM jeanblanchard/alpine-glibc
