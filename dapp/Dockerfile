@@ -8,7 +8,7 @@ ENV PATH /root/go/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin
 RUN mkdir -p /root/go
 
 RUN apt-get update && \
-  apt-get install -y wget unzip git && \
+  apt-get install -y wget unzip git jq && \
   apt-get install -y curl vim-tiny less && \
   rm -rf /var/lib/apt/lists/*
 
@@ -27,13 +27,12 @@ RUN wget https://github.com/mattn/goreman/releases/download/v0.0.10/goreman_linu
 
 # install qtum binaries
 RUN set -ex \
-    && echo `curl -s https://api.github.com/repos/qtumproject/qtum/releases/latest | jq -r ".assets[] | select(.name | test(\"x86_64-linux-gnu.tar.gz\")) | .browser_download_url"` > /tmp/qtum_url \
-    && QTUM_URL=`cat /tmp/qtum_url` \
-    && QTUM_DIST=$(basename $QTUM_URL) \
-    && wget -O $QTUM_DIST $QTUM_URL \
-	&& tar -xzvf $QTUM_DIST -C /usr/local --strip-components=1 --exclude=*-qt --exclude=test_qtum --exclude=qtum-tx \
-	&& rm /tmp/qtum* 
-
+  && echo `curl -s https://api.github.com/repos/qtumproject/qtum/releases/latest | jq -r ".assets[] | select(.name | test(\"x86_64-linux-gnu.tar.gz\")) | .browser_download_url"` > /tmp/qtum_url \
+  && QTUM_URL=`cat /tmp/qtum_url` \
+  && QTUM_DIST=$(basename $QTUM_URL) \
+  && wget -O $QTUM_DIST $QTUM_URL \
+  && tar -xzvf $QTUM_DIST -C /usr/local --strip-components=1 \
+  && rm /tmp/qtum*
 
 
 RUN wget https://github.com/ethereum/solidity/releases/download/v0.4.19/solc-static-linux -O /usr/local/bin/solc && \
